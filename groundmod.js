@@ -1,7 +1,7 @@
 // ==Sandboxels Mod==
-// @name Ground Tool Full Cycle + Visuals
-// @version 1.9
-// @description Ground Tool with full cycle, liquid variants, and visual effects
+// @name Ground Tool
+// @version 1.0
+// @description Full-feature Ground Tool: powders, pulps, blended paste, drying, rehydration, and visual effects
 // ==/Sandboxels Mod==
 
 // Helper for spawning small particles
@@ -9,7 +9,7 @@ function spawnParticles(x, y, color, count){
     for(let i=0; i<count; i++){
         let dx = x + Math.random()*3-1.5;
         let dy = y + Math.random()*3-1.5;
-        createPixel({x:dx, y:dy, element: "particle", color: color});
+        createPixel({x:dx, y:dy, element:"particle", color: color});
     }
 }
 
@@ -58,43 +58,43 @@ elements.paste_powder = {
     }
 };
 
-// --- Liquid variants ---
+// --- Liquid Variants ---
 elements.milk_paste = { color:"#f0e5c0", behavior:behaviors.LIQUID, category:"food", state:"liquid", density:1050 };
 elements.juice_paste = { color:"#ffb347", behavior:behaviors.LIQUID, category:"food", state:"liquid", density:1040 };
 elements.paste_jelly = { color:"#b47f4d", behavior:behaviors.WALL, category:"food", state:"solid", density:1100 };
 
-// --- Mapping foods ---
+// --- Food Mappings ---
 let groundMap = { meat:"ground_meat", wheat:"ground_wheat", bread:"ground_wheat", potato:"ground_potato", carrot:"ground_carrot" };
 let pulpMap = { apple:"apple_pulp", berry:"berry_pulp", tomato:"tomato_pulp", grape:"grape_pulp", orange:"orange_pulp" };
 let blendFoods = ["soup","sandwich","pizza","stew","salad"];
 
-// --- Ground Tool with visuals ---
+// --- Ground Tool ---
 tools.ground = {
     name:"Ground Tool",
-    description:"Grinds food into powder, pulp, or paste with visual effects.",
+    description:"Grinds food into powder, pulp, or paste. Paste can dry and rehydrate differently depending on the liquid.",
     color:"#a0522d",
     tool:function(pixel){
         if(elements[pixel.element].category==="food"){
             let x=pixel.x, y=pixel.y;
             if(groundMap[pixel.element]){
                 changePixel(pixel, groundMap[pixel.element]);
-                spawnParticles(x, y, "#c2b280", 5); // dust particles
+                spawnParticles(x, y, "#c2b280", 5);
             }
             else if(pulpMap[pixel.element]){
                 changePixel(pixel, pulpMap[pixel.element]);
-                spawnParticles(x, y, elements[pixel.element].color, 8); // splash
+                spawnParticles(x, y, elements[pixel.element].color, 8);
             }
             else if(blendFoods.includes(pixel.element)){
                 changePixel(pixel,"blended_paste");
-                spawnParticles(x, y, "#996633", 10); // swirls
+                spawnParticles(x, y, "#996633", 10);
             }
             else if(pixel.element==="dried_paste"){
                 changePixel(pixel,"paste_powder");
-                spawnParticles(x, y, "#c2a57a", 6); // powder burst
+                spawnParticles(x, y, "#c2a57a", 6);
             }
             else{
                 changePixel(pixel,"dust");
-                spawnParticles(x, y, "#aaaaaa", 4); // fallback dust
+                spawnParticles(x, y, "#aaaaaa", 4);
             }
         }
     }
